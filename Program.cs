@@ -1,4 +1,26 @@
 ﻿// Build a collection of customers who are millionaires
+
+/*
+    TASK:
+    As in the previous exercise, you're going to output the millionaires,
+    but you will also display the full name of the bank. You also need
+    to sort the millionaires' names, ascending by their LAST name.
+
+    Example output:
+        Tina Fey at Citibank
+        Joe Landy at Wells Fargo
+        Sarah Ng at First Tennessee
+        Les Paul at Wells Fargo
+        Peg Vale at Bank of America
+*/
+
+// Define a bank
+public class Bank
+{
+    public required string Symbol { get; set; }
+    public required string Name { get; set; }
+}
+
 public class Customer
 {
     public required string Name { get; set; }
@@ -16,6 +38,15 @@ public class Program
 {
     public static void Main()
     {
+        // Create some banks and store in a List
+        List<Bank> banks = new List<Bank>()
+        {
+            new Bank() { Name = "First Tennessee", Symbol = "FTB" },
+            new Bank() { Name = "Wells Fargo", Symbol = "WF" },
+            new Bank() { Name = "Bank of America", Symbol = "BOA" },
+            new Bank() { Name = "Citibank", Symbol = "CITI" },
+        };
+
         List<Customer> customers = new List<Customer>()
         {
             new Customer()
@@ -113,6 +144,21 @@ public class Program
         foreach (BankReport entry in bankReport)
         {
             Console.WriteLine($"{entry.ReportBank} {entry.ReportMillionaires}");
+        }
+
+        Console.WriteLine();
+
+        var millionaireReport =
+            from millionaire in millionaires
+            join bank in banks on millionaire.Bank equals bank.Symbol
+            let lastName = millionaire.Name.Split(' ').Last()
+            orderby lastName
+            select new { MillionaireName = millionaire.Name, BankName = bank.Name };
+
+        Console.WriteLine("Millionaires and Banks:");
+        foreach (var report in millionaireReport)
+        {
+            Console.WriteLine($"{report.MillionaireName} at {report.BankName}");
         }
     }
 }
